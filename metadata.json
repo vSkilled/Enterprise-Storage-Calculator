@@ -1,0 +1,6 @@
+{
+  "name": "Enterprise Storage Calculator",
+  "description": "Model, visualize, and analyze storage configurations across RAID, ZFS, Unraid, and BTRFS with AI architectural guidance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
