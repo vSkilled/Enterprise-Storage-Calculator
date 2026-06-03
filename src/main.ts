@@ -27,9 +27,9 @@ function updateThemeButtonsUI(activeTheme: Theme) {
 
   // Add highlighted borders and backgrounds to selected mode
   if (activeTheme === 'light') {
-    lightBtn.className = "p-2 rounded-lg bg-blue-105 border border-blue-200/60 text-blue-600 dark:bg-blue-950/40 dark:border-blue-500/30 dark:text-blue-400 font-bold transition-all cursor-pointer";
+    lightBtn.className = "p-2 rounded-lg bg-blue-100 border border-blue-200/60 text-blue-600 dark:bg-blue-950/40 dark:border-blue-500/30 dark:text-blue-400 font-bold transition-all cursor-pointer";
   } else if (activeTheme === 'dark') {
-    darkBtn.className = "p-2 rounded-lg bg-blue-105 border border-blue-200/60 text-blue-600 dark:bg-blue-950/40 dark:border-blue-500/30 dark:text-blue-400 font-bold transition-all cursor-pointer";
+    darkBtn.className = "p-2 rounded-lg bg-blue-100 border border-blue-200/60 text-blue-600 dark:bg-blue-950/40 dark:border-blue-500/30 dark:text-blue-400 font-bold transition-all cursor-pointer";
   } else if (activeTheme === 'auto') {
     autoBtn.className = "p-2 rounded-lg bg-emerald-100/60 border border-emerald-200/60 text-emerald-600 dark:bg-emerald-950/40 dark:border-emerald-500/30 dark:text-emerald-400 font-bold transition-all cursor-pointer";
   }

@@ -100,6 +100,12 @@ export const getSVGIcon = (name: string, cls: string = 'w-4 h-4'): string => {
       return `<svg xmlns="http://www.w3.org/2000/svg" class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`;
     case 'monitor':
       return `<svg xmlns="http://www.w3.org/2000/svg" class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>`;
+    case 'check-circle':
+      return `<svg xmlns="http://www.w3.org/2000/svg" class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`;
+    case 'alert-octagon':
+      return `<svg xmlns="http://www.w3.org/2000/svg" class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+    case 'alert-triangle':
+      return `<svg xmlns="http://www.w3.org/2000/svg" class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
     default:
       return '';
   }
@@ -132,8 +138,8 @@ export function buildDriveBayHTML(id: number, isPopulated: boolean, size?: numbe
     cardClass = 'bg-emerald-50/50 border-emerald-200/80 text-emerald-950 dark:bg-emerald-950/20 dark:border-emerald-500/30 dark:text-emerald-200 hover:border-emerald-300';
     tagClass = 'text-emerald-600 bg-emerald-100/60 border-emerald-200/30 dark:text-emerald-300 dark:bg-emerald-950/50 dark:border-emerald-500/30';
   } else if (mediaType === 'hdd5400') {
-    driveIconColor = 'text-slate-450 dark:text-slate-400';
-    cardClass = 'bg-slate-50 border-slate-200 text-slate-905 dark:bg-slate-800/40 dark:border-slate-700/80 dark:text-slate-200 hover:border-slate-300';
+    driveIconColor = 'text-slate-400 dark:text-slate-400';
+    cardClass = 'bg-slate-50 border-slate-200 text-slate-900 dark:bg-slate-800/40 dark:border-slate-700/80 dark:text-slate-200 hover:border-slate-300';
     tagClass = 'text-slate-500 bg-slate-100 border-slate-200/30 dark:text-slate-400 dark:bg-slate-800/70 dark:border-slate-700/80';
   } else if (mediaType === 'nvme') {
     driveIconColor = 'text-purple-500';
@@ -316,122 +322,125 @@ export function renderStandardTab() {
     </div>
   `;
 
-  // 2. Render Storage & Performance Metrics Panel
-  const usableTiB = results.usable === 0 ? '0.00' : (results.usable * (1000**4 / 1024**4)).toFixed(2);
-  metricsDiv.innerHTML = `
-    <div class="space-y-6">
-      <!-- Core Capacity Metas -->
-      <div class="flex items-center gap-2 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-        ${getSVGIcon('layers', 'w-4 h-4')} Storage Capacity
-      </div>
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-          <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Usable Storage</p>
-          <p class="text-xl font-black text-blue-600 dark:text-blue-400 font-mono">${results.usable.toFixed(1).replace(/\.0$/, '')} TB</p>
-          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-mono mt-0.5 select-none">~${usableTiB} TiB binary equivalence</p>
-        </div>
-        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-          <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Protection Overhead</p>
-          <p class="text-xl font-black text-emerald-600 dark:text-emerald-400 font-mono">${results.protection.toFixed(1).replace(/\.0$/, '')} TB</p>
-          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-mono mt-0.5 select-none">Parity or mirror duplicates</p>
-        </div>
-        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-          <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Raw Capacity</p>
-          <p class="text-xl font-black text-slate-800 dark:text-slate-200 font-mono">${results.raw.toFixed(1).replace(/\.0$/, '')} TB</p>
-          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-mono mt-0.5 select-none">Sum of all raw disk bytes</p>
-        </div>
-        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-          <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Fault Tolerance</p>
-          <p class="text-[12px] font-black text-purple-600 dark:text-purple-400 mt-1 select-none leading-tight uppercase font-mono">${results.faultToleranceText}</p>
-          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-mono mt-1.5 select-none">Drives safe to fail in pool</p>
-        </div>
-      </div>
+  const updateStandardResults = () => {
+    const { diskCount, diskSize, mediaType, raidLevel } = STATE.standard;
+    const results = calculateStandardRaid(diskCount, diskSize, raidLevel, mediaType);
 
-      <!-- Performance Estimations -->
-      <div class="flex items-center gap-2 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest pt-2">
-        ${getSVGIcon('gauge', 'w-4 h-4')} Performance Estimates
-      </div>
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
-        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm text-slate-900 dark:text-slate-100">
-          <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Read Throughput</p>
-          <p class="text-lg font-black text-indigo-600 dark:text-indigo-400">${formatSpeed(results.readSpeed)}</p>
-          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-sans mt-0.5 select-none leading-none">${formatIOPS(results.readIops)} IOPS</p>
+    // Update Metrics
+    const usableTiB = results.usable === 0 ? '0.00' : (results.usable * (1000**4 / 1024**4)).toFixed(2);
+    metricsDiv.innerHTML = `
+      <div class="space-y-6">
+        <!-- Core Capacity Metas -->
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+          ${getSVGIcon('layers', 'w-4 h-4')} Storage Capacity
         </div>
-        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm text-slate-900 dark:text-slate-100">
-          <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Write Throughput</p>
-          <p class="text-lg font-black text-pink-600 dark:text-pink-400">${formatSpeed(results.writeSpeed)}</p>
-          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-sans mt-0.5 select-none leading-none">${formatIOPS(results.writeIops)} IOPS</p>
-        </div>
-        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm col-span-2 flex flex-col justify-between text-slate-900 dark:text-slate-100 font-sans">
-          <div>
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Est. Parity Rebuild</p>
-            <p class="text-lg font-black text-amber-600 dark:text-amber-500 font-mono">${results.rebuildTimeText}</p>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Usable Storage</p>
+            <p class="text-xl font-black text-blue-600 dark:text-blue-400 font-mono">${results.usable.toFixed(1).replace(/\.0$/, '')} TB</p>
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-mono mt-0.5 select-none">~${usableTiB} TiB binary equivalence</p>
           </div>
-          <p class="text-[9px] text-slate-400 dark:text-slate-500 font-sans leading-none mt-1.5 select-none">Full rebuild calculated under ideal throughput bounds</p>
+          <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Protection Overhead</p>
+            <p class="text-xl font-black text-emerald-600 dark:text-emerald-400 font-mono">${results.protection.toFixed(1).replace(/\.0$/, '')} TB</p>
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-mono mt-0.5 select-none">Parity or mirror duplicates</p>
+          </div>
+          <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Raw Capacity</p>
+            <p class="text-xl font-black text-slate-800 dark:text-slate-200 font-mono">${results.raw.toFixed(1).replace(/\.0$/, '')} TB</p>
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-mono mt-0.5 select-none">Sum of all raw disk bytes</p>
+          </div>
+          <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Fault Tolerance</p>
+            <p class="text-[12px] font-black text-purple-600 dark:text-purple-400 mt-1 select-none leading-tight uppercase font-mono">${results.faultToleranceText}</p>
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-mono mt-1.5 select-none">Drives safe to fail in pool</p>
+          </div>
+        </div>
+
+        <!-- Performance Estimations -->
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest pt-2">
+          ${getSVGIcon('gauge', 'w-4 h-4')} Performance Estimates
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
+          <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm text-slate-900 dark:text-slate-100">
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Read Throughput</p>
+            <p class="text-lg font-black text-indigo-600 dark:text-indigo-400">${formatSpeed(results.readSpeed)}</p>
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-sans mt-0.5 select-none leading-none">${formatIOPS(results.readIops)} IOPS</p>
+          </div>
+          <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm text-slate-900 dark:text-slate-100">
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Write Throughput</p>
+            <p class="text-lg font-black text-pink-600 dark:text-pink-400">${formatSpeed(results.writeSpeed)}</p>
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-sans mt-0.5 select-none leading-none">${formatIOPS(results.writeIops)} IOPS</p>
+          </div>
+          <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm col-span-2 flex flex-col justify-between text-slate-900 dark:text-slate-100 font-sans">
+            <div>
+              <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Est. Parity Rebuild</p>
+              <p class="text-lg font-black text-amber-600 dark:text-amber-500 font-mono">${results.rebuildTimeText}</p>
+            </div>
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-sans leading-none mt-1.5 select-none">Full rebuild calculated under ideal throughput bounds</p>
+          </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
 
-  // Render Status Check Box
-  renderStatusBox(results.status);
+    // Render Status Check Box
+    renderStatusBox(results.status);
 
-  // 3. Draw Drive Bays in Server Chassis
-  const displayBayCount = Math.max(24, Math.ceil(diskCount / 6) * 6);
-  // Unraid isolates its parity drive count
-  const protectionBytes = results.protection;
-  const parityDriveCount = results.usable === 0 ? 0 : Math.ceil(protectionBytes / diskSize);
+    // Update Chassis
+    const displayBayCount = Math.max(24, Math.ceil(diskCount / 6) * 6);
+    let baysHTML = '';
+    for (let i = 1; i <= displayBayCount; i++) {
+      const isPopulated = i <= diskCount;
+      const isParity = isPopulated && (
+        raidLevel === 'raid1' ? (i > 1) :
+        raidLevel === 'raid5' || raidLevel === 'raidz1' || raidLevel === 'shr1' ? (i === diskCount) :
+        raidLevel === 'raid6' || raidLevel === 'raidz2' || raidLevel === 'shr2' ? (i > diskCount - 2) :
+        raidLevel === 'raidz3' ? (i > diskCount - 3) :
+        raidLevel === 'raid10' ? (i % 2 === 0) :
+        false
+      );
+      baysHTML += buildDriveBayHTML(i, isPopulated, diskSize, mediaType, isParity);
+    }
 
-  let baysHTML = '';
-  for (let i = 1; i <= displayBayCount; i++) {
-    const isPopulated = i <= diskCount;
-    // Parity drives are labeled based on parity count boundaries
-    const isParity = isPopulated && (
-      raidLevel === 'raid1' ? (i > 1) :
-      raidLevel === 'raid5' || raidLevel === 'raidz1' || raidLevel === 'shr1' ? (i === diskCount) :
-      raidLevel === 'raid6' || raidLevel === 'raidz2' || raidLevel === 'shr2' ? (i > diskCount - 2) :
-      raidLevel === 'raidz3' ? (i > diskCount - 3) :
-      raidLevel === 'raid10' ? (i % 2 === 0) :
-      false
-    );
-    baysHTML += buildDriveBayHTML(i, isPopulated, diskSize, mediaType, isParity);
-  }
-
-  chassisDiv.innerHTML = `
-    <div class="flex flex-col h-full">
-      <h4 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
-        ${getSVGIcon('layers', 'w-3.5 h-3.5 text-blue-500')} Main Chassis (${displayBayCount}-bay layout)
-      </h4>
-      <div class="bg-white dark:bg-slate-850 rounded-xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2 relative overflow-y-auto max-h-[300px] custom-scrollbar flex-grow">
-        <div class="grid grid-cols-6 gap-2">
-          ${baysHTML}
+    chassisDiv.innerHTML = `
+      <div class="flex flex-col h-full">
+        <h4 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+          ${getSVGIcon('layers', 'w-3.5 h-3.5 text-blue-500')} Main Chassis (${displayBayCount}-bay layout)
+        </h4>
+        <div class="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2 relative overflow-y-auto max-h-[300px] custom-scrollbar flex-grow">
+          <div class="grid grid-cols-6 gap-2">
+            ${baysHTML}
+          </div>
         </div>
       </div>
-    </div>
-  `;
+    `;
+  };
+
+  // Initial update
+  updateStandardResults();
 
   // Bind Listeners
   document.getElementById('stdDiskCountSlider')!.addEventListener('input', (e) => {
     const val = parseInt((e.target as HTMLInputElement).value);
     STATE.standard.diskCount = val;
     document.getElementById('stdDiskCountLabel')!.innerText = val.toString();
-    renderStandardTab();
+    updateStandardResults();
   });
 
   document.getElementById('stdDiskSizeInput')!.addEventListener('input', (e) => {
     const val = parseFloat((e.target as HTMLInputElement).value) || 0;
     STATE.standard.diskSize = val;
-    renderStandardTab();
+    updateStandardResults();
   });
 
   document.getElementById('stdMediaTypeSelect')!.addEventListener('change', (e) => {
     STATE.standard.mediaType = (e.target as HTMLSelectElement).value as MediaType;
-    renderStandardTab();
+    updateStandardResults();
   });
 
   document.getElementById('stdRaidLevelSelect')!.addEventListener('change', (e) => {
     STATE.standard.raidLevel = (e.target as HTMLSelectElement).value as RaidLevel;
-    renderStandardTab();
+    updateStandardResults();
   });
 }
 
@@ -481,7 +490,7 @@ export function renderUnraidTab() {
             </label>
             <select
               id="unFSSelect"
-              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 appearance-none cursor-pointer text-xs font-medium"
+              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-900 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 appearance-none cursor-pointer text-xs font-medium"
             >
               <option value="xfs" ${fileSystem === 'xfs' ? 'selected' : ''}>XFS (Default, Highest Performance)</option>
               <option value="btrfs" ${fileSystem === 'btrfs' ? 'selected' : ''}>BTRFS (Snapshots, Integrity Check)</option>
@@ -495,7 +504,7 @@ export function renderUnraidTab() {
             </label>
             <select
               id="unParitySelect"
-              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 appearance-none cursor-pointer text-xs font-medium"
+              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-900 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 appearance-none cursor-pointer text-xs font-medium"
             >
               <option value="0" ${parityCount === 0 ? 'selected' : ''}>No Parity (0 Disks)</option>
               <option value="1" ${parityCount === 1 ? 'selected' : ''}>Single Parity (1 Disk)</option>
@@ -510,7 +519,7 @@ export function renderUnraidTab() {
             <select
               id="unWriteMethodSelect"
               ${parityCount === 0 ? 'disabled' : ''}
-              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 appearance-none cursor-pointer text-xs font-medium disabled:opacity-50"
+              class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-900 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-blue-500 appearance-none cursor-pointer text-xs font-medium disabled:opacity-50"
             >
               <option value="auto" ${writeMethod === 'auto' ? 'selected' : ''}>Auto (Read/Modify/Write - Power Saving)</option>
               <option value="reconstruct" ${writeMethod === 'reconstruct' ? 'selected' : ''}>Reconstruct Write (Turbo Write - Speed)</option>
@@ -521,7 +530,7 @@ export function renderUnraidTab() {
         <!-- Dynamic List of Data drive configs -->
         <div class="space-y-2 mt-6">
           <div class="flex justify-between items-center text-xs font-bold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800 pb-2 mb-2">
-            <span class="text-slate-705 dark:text-slate-300">Array Disks (${arrayDisks.length}/30)</span>
+            <span class="text-slate-700 dark:text-slate-300">Array Disks (${arrayDisks.length}/30)</span>
             <button
               id="unAddNewArrayDisk"
               class="text-[10px] bg-blue-600 hover:bg-blue-700 text-white font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition-all uppercase tracking-wide cursor-pointer"
@@ -573,10 +582,10 @@ export function renderUnraidTab() {
 
         <div class="space-y-2">
           <div class="flex justify-between items-center text-xs font-bold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800 pb-2 mb-2">
-            <span class="text-slate-705 dark:text-slate-300">Cache Disks (${cacheDisks.length}/30)</span>
+            <span class="text-slate-700 dark:text-slate-300">Cache Disks (${cacheDisks.length}/30)</span>
             <button
               id="unAddNewCacheDisk"
-              class="text-[10px] bg-purple-650 hover:bg-purple-700 text-white font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition-all uppercase tracking-wide cursor-pointer"
+              class="text-[10px] bg-purple-600 hover:bg-purple-700 text-white font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition-all uppercase tracking-wide cursor-pointer"
               ${cacheDisks.length >= 30 ? 'disabled' : ''}
             >
               ${getSVGIcon('plus', 'w-3 h-3')} Add
@@ -620,7 +629,7 @@ export function renderUnraidTab() {
         </select>
         <button
           data-idx="${idx}"
-          class="un-array-remove-btn text-slate-400 hover:text-red-550 dark:hover:text-red-400 hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded-md transition-colors cursor-pointer"
+          class="un-array-remove-btn text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded-md transition-colors cursor-pointer"
           aria-label="Remove Array Disk"
         >
           ${getSVGIcon('x', 'w-3.5 h-3.5')}
@@ -684,7 +693,7 @@ export function renderUnraidTab() {
         </select>
         <button
           data-idx="${idx}"
-          class="un-cache-remove-btn text-slate-400 hover:text-red-550 dark:hover:text-red-400 hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded-md transition-colors cursor-pointer"
+          class="un-cache-remove-btn text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded-md transition-colors cursor-pointer"
           aria-label="Remove Cache Disk"
         >
           ${getSVGIcon('x', 'w-3.5 h-3.5')}
@@ -734,25 +743,25 @@ export function renderUnraidTab() {
         </h3>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Usable Storage</p>
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Usable Storage</p>
             <p class="text-xl font-black text-blue-600 dark:text-blue-400 font-mono">
               ${arrayDisks.length === 0 ? '0 TB' : `${arrayResults.usable.toFixed(1).replace(/\.0$/, '')} TB`}
             </p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Parity Allocation</p>
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Parity Allocation</p>
             <p class="text-xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
               ${arrayDisks.length === 0 ? '0 TB' : `${arrayResults.paritySize.toFixed(1).replace(/\.0$/, '')} TB`}
             </p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-mono">Raw Capacity</p>
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-mono">Raw Capacity</p>
             <p class="text-xl font-black text-slate-800 dark:text-slate-200 font-mono">
               ${arrayResults.raw.toFixed(1).replace(/\.0$/, '')} TB
             </p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm font-mono">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Redundancy Level</p>
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Redundancy Level</p>
             <p class="text-[12px] font-black text-purple-600 dark:text-purple-400 mt-1 leading-tight select-none">
               ${arrayResults.faultToleranceText}
             </p>
@@ -762,24 +771,24 @@ export function renderUnraidTab() {
         <!-- Array Speeds -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm text-slate-900 dark:text-slate-100">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Read Speed (Max)</p>
-            <p class="text-lg font-bold text-indigo-650 dark:text-indigo-400">
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Read Speed (Max)</p>
+            <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400">
               ${arrayDisks.length === 0 ? '0 MB/s' : formatSpeed(arrayResults.readSpeed)}
             </p>
             <p class="text-[9px] text-slate-400 dark:text-slate-500 font-sans mt-0.5 select-none leading-none">Single active read stream</p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm text-slate-900 dark:text-slate-100">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Write Speed (Est)</p>
-            <p class="text-lg font-bold text-pink-650 dark:text-pink-400">
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Write Speed (Est)</p>
+            <p class="text-lg font-bold text-pink-600 dark:text-pink-400">
               ${arrayDisks.length === 0 ? '0 MB/s' : formatSpeed(arrayResults.writeSpeed)}
             </p>
-            <p class="text-[9px] text-slate-405 dark:text-slate-500 font-sans mt-0.5 select-none leading-none">
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-sans mt-0.5 select-none leading-none">
               ${arrayResults.writeMethodText}
             </p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm col-span-2 flex flex-col justify-between text-slate-900 dark:text-slate-100 font-sans">
             <div>
-              <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans font-sans">Est. Parity Rebuild</p>
+              <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans font-sans">Est. Parity Rebuild</p>
               <p class="text-lg font-bold text-amber-600 dark:text-amber-500 font-mono">
                 ${arrayResults.rebuildTimeText}
               </p>
@@ -794,25 +803,25 @@ export function renderUnraidTab() {
         </h3>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in">
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Cache Usable</p>
-            <p class="text-xl font-black text-purple-650 dark:text-purple-400 font-mono">
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Cache Usable</p>
+            <p class="text-xl font-black text-purple-600 dark:text-purple-400 font-mono">
               ${cacheDisks.length === 0 ? '0 TB' : `${cacheResults.usable.toFixed(1).replace(/\.0$/, '')} TB`}
             </p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Cache Protection</p>
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Cache Protection</p>
             <p class="text-xl font-black text-slate-500 dark:text-slate-400 font-mono">
               ${cacheDisks.length === 0 ? '0 TB' : `${cacheResults.protection.toFixed(1).replace(/\.0$/, '')} TB`}
             </p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm font-mono">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Cache Raw Size</p>
-            <p class="text-xl font-black text-slate-705 dark:text-slate-200">
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Cache Raw Size</p>
+            <p class="text-xl font-black text-slate-700 dark:text-slate-200">
               ${cacheResults.raw.toFixed(1).replace(/\.0$/, '')} TB
             </p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Cache Layout Mode</p>
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Cache Layout Mode</p>
             <p class="text-[10px] font-black text-slate-600 dark:text-slate-400 mt-1 leading-tight uppercase font-mono">
               ${cacheResults.profileText.replace('_', ' ')}
             </p>
@@ -822,27 +831,27 @@ export function renderUnraidTab() {
         <!-- Cache Speeds -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 font-mono animate-fade-in">
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm text-slate-900 dark:text-slate-100">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Cache Read</p>
-            <p class="text-lg font-bold text-indigo-650 dark:text-indigo-400">
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Cache Read</p>
+            <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400">
               ${cacheDisks.length === 0 ? '0 MB/s' : formatSpeed(cacheResults.readSpeed)}
             </p>
-            <p class="text-[9px] text-slate-404 dark:text-slate-500 font-sans mt-0.5 leading-none select-none">
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-sans mt-0.5 leading-none select-none">
               ${cacheDisks.length === 0 ? '0' : formatIOPS(cacheResults.readIops)} IOPS
             </p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm text-slate-900 dark:text-slate-100">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans font-sans">Cache Write</p>
-            <p class="text-lg font-bold text-pink-650 dark:text-pink-400">
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans font-sans">Cache Write</p>
+            <p class="text-lg font-bold text-pink-600 dark:text-pink-400">
               ${cacheDisks.length === 0 ? '0 MB/s' : formatSpeed(cacheResults.writeSpeed)}
             </p>
-            <p class="text-[9px] text-slate-404 dark:text-slate-500 font-sans mt-0.5 leading-none select-none">
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-sans mt-0.5 leading-none select-none">
               ${cacheDisks.length === 0 ? '0' : formatIOPS(cacheResults.writeIops)} IOPS
             </p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm col-span-2 flex flex-col justify-between text-slate-900 dark:text-slate-100 font-sans">
             <div>
-              <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Cache Rebuild Time</p>
-              <p class="text-lg font-bold text-amber-650 dark:text-amber-500 font-mono">${cacheResults.rebuildTimeText}</p>
+              <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Cache Rebuild Time</p>
+              <p class="text-lg font-bold text-amber-600 dark:text-amber-500 font-mono">${cacheResults.rebuildTimeText}</p>
             </div>
             <p class="text-[9px] text-slate-400 dark:text-slate-500 font-sans leading-none mt-1 select-none">Full rebuild under ideal SSD write throughputs</p>
           </div>
@@ -891,10 +900,10 @@ export function renderUnraidTab() {
       <div class="pt-2 grid grid-cols-1 md:grid-cols-12 gap-6 select-none animate-fade-in">
         <!-- Main Chassis -->
         <div class="md:col-span-8 flex flex-col">
-          <h4 class="text-[10px] font-bold text-slate-500 dark:text-slate-450 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+          <h4 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
             ${getSVGIcon('layers', 'w-3.5 h-3.5 text-blue-500')} Main Chassis (${displayABaysCount}-bay)
           </h4>
-          <div class="bg-white dark:bg-slate-850 rounded-xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2 relative overflow-y-auto max-h-[300px] custom-scrollbar flex-grow">
+          <div class="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2 relative overflow-y-auto max-h-[300px] custom-scrollbar flex-grow">
             <div class="grid grid-cols-6 gap-2">
               ${arrayBaysHTML}
             </div>
@@ -906,7 +915,7 @@ export function renderUnraidTab() {
           <h4 class="text-[10px] font-bold text-purple-600 dark:text-purple-400 mr-2 uppercase tracking-widest mb-2 flex items-center gap-1.5">
             ${getSVGIcon('database', 'w-3.5 h-3.5 text-purple-600')} Cache Pool (${displayCBaysCount}-bay)
           </h4>
-          <div class="bg-white dark:bg-slate-850 rounded-xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2 relative overflow-y-auto max-h-[300px] custom-scrollbar flex-grow">
+          <div class="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2 relative overflow-y-auto max-h-[300px] custom-scrollbar flex-grow">
             <div class="grid grid-cols-2 gap-2">
               ${cacheBaysHTML}
             </div>
@@ -920,28 +929,6 @@ export function renderUnraidTab() {
 
   // Helper recalculating inputs on changes
   const recalculateUnraidUpdates = () => {
-    const arrayRes = calculateUnraidArray(STATE.unraid.arrayDisks, parityCount, fileSystem, writeMethod);
-    const cacheRes = calculateUnraidCache(STATE.unraid.cacheDisks, cacheMode);
-
-    let activeStatusUpd = arrayRes.status;
-    if (arrayRes.status.severity === 'error') {
-      activeStatusUpd = arrayRes.status;
-    } else if (cacheRes.status && cacheRes.status.severity === 'error') {
-      activeStatusUpd = cacheRes.status;
-    } else if (arrayRes.status.severity === 'warning') {
-      activeStatusUpd = arrayRes.status;
-    } else if (cacheRes.status && cacheRes.status.severity === 'warning') {
-      activeStatusUpd = cacheRes.status;
-    } else if (arrayRes.status.severity === 'suboptimal') {
-      activeStatusUpd = arrayRes.status;
-    } else if (cacheRes.status && cacheRes.status.severity === 'suboptimal') {
-      activeStatusUpd = cacheRes.status;
-    } else if (arrayRes.status.severity === 'info') {
-      activeStatusUpd = arrayRes.status;
-    } else if (cacheRes.status && cacheRes.status.severity === 'info') {
-      activeStatusUpd = cacheRes.status;
-    }
-
     renderUnraidMetrics();
     renderUnraidChassis();
   };
@@ -1005,7 +992,7 @@ export function renderBtrfsTab() {
   settingsDiv.innerHTML = `
     <div class="space-y-6 animate-fade-in">
       <div>
-        <h2 class="text-sm font-bold flex items-center gap-2 mb-4 text-slate-850 dark:text-slate-200 uppercase tracking-wider">
+        <h2 class="text-sm font-bold flex items-center gap-2 mb-4 text-slate-900 dark:text-slate-200 uppercase tracking-wider">
           ${getSVGIcon('compass', 'w-4 h-4 text-slate-400')} BTRFS OS
         </h2>
 
@@ -1036,7 +1023,7 @@ export function renderBtrfsTab() {
             <span class="text-slate-700 dark:text-slate-300 font-bold">Pool Disks (${disks.length}/24)</span>
             <button
               id="btAddNewPoolDisk"
-              class="text-[10px] bg-emerald-600 hover:bg-emerald-750 text-white font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition-all uppercase tracking-wide cursor-pointer"
+              class="text-[10px] bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition-all uppercase tracking-wide cursor-pointer"
               ${disks.length >= 24 ? 'disabled' : ''}
             >
               ${getSVGIcon('plus', 'w-3 h-3')} Add
@@ -1079,7 +1066,7 @@ export function renderBtrfsTab() {
         </select>
         <button
           data-idx="${idx}"
-          class="bt-drive-remove-btn text-slate-400 hover:text-red-550 dark:hover:text-red-400 hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded-md transition-colors cursor-pointer"
+          class="bt-drive-remove-btn text-slate-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-slate-200 dark:hover:bg-slate-800 p-1 rounded-md transition-colors cursor-pointer"
           aria-label="Remove Btrfs Disk"
         >
           ${getSVGIcon('x', 'w-3.5 h-3.5')}
@@ -1124,25 +1111,25 @@ export function renderBtrfsTab() {
       <div class="space-y-6">
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in">
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Est. Usable</p>
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Est. Usable</p>
             <p class="text-xl font-black text-emerald-600 dark:text-emerald-400 font-mono">
               ${results.usable === 0 ? '0 TB' : `${results.usable.toFixed(1).replace(/\.0$/, '')} TB`}
             </p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Protection Overhead</p>
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Protection Overhead</p>
             <p class="text-xl font-black text-slate-500 dark:text-slate-400 font-mono">
               ${results.usable === 0 ? '0 TB' : `${results.protection.toFixed(1).replace(/\.0$/, '')} TB`}
             </p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm font-mono">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Raw Capacity</p>
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Raw Capacity</p>
             <p class="text-xl font-black text-slate-800 dark:text-slate-200">
               ${results.raw.toFixed(1).replace(/\.0$/, '')} TB
             </p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm theme-text">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Fault Tolerance</p>
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none">Fault Tolerance</p>
             <p class="text-[12px] font-black text-emerald-600 mt-1 dark:text-emerald-400 leading-tight uppercase font-mono">
               ${results.faultToleranceText}
             </p>
@@ -1154,26 +1141,26 @@ export function renderBtrfsTab() {
         </h3>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Read Throughput</p>
-            <p class="text-lg font-bold text-indigo-650 dark:text-indigo-400">
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Read Throughput</p>
+            <p class="text-lg font-bold text-indigo-600 dark:text-indigo-400">
               ${disks.length === 0 ? '0' : formatSpeed(results.readSpeed)}
             </p>
-            <p class="text-[9px] text-slate-401 dark:text-slate-500 font-sans mt-0.5 leading-none select-none">
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-sans mt-0.5 leading-none select-none">
               ${disks.length === 0 ? '0' : formatIOPS(results.readIops)} IOPS
             </p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl shadow-sm">
-            <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Write Throughput</p>
-            <p class="text-lg font-bold text-pink-655 dark:text-pink-400">
+            <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Write Throughput</p>
+            <p class="text-lg font-bold text-pink-600 dark:text-pink-400">
               ${disks.length === 0 ? '0' : formatSpeed(results.writeSpeed)}
             </p>
-            <p class="text-[9px] text-slate-401 dark:text-slate-500 font-sans mt-0.5 leading-none select-none">
+            <p class="text-[9px] text-slate-400 dark:text-slate-500 font-sans mt-0.5 leading-none select-none">
               ${disks.length === 0 ? '0' : formatIOPS(results.writeIops)} IOPS
             </p>
           </div>
           <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 p-4 rounded-xl col-span-2 shadow-sm font-sans flex flex-col justify-between">
             <div>
-              <p class="text-slate-455 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Est. Rebalance / Rebuild</p>
+              <p class="text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-1 select-none font-sans">Est. Rebalance / Rebuild</p>
               <p class="text-lg font-bold text-amber-500 font-mono">${results.rebuildTimeText}</p>
             </div>
             <p class="text-[9px] text-slate-400 dark:text-slate-500 mt-1 select-none leading-none">Full BTRFS balance under ideal write conditions</p>
@@ -1217,7 +1204,7 @@ export function renderBtrfsTab() {
         <h4 class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
           ${getSVGIcon('compass', 'w-3.5 h-3.5 text-emerald-500')} Native Pool Layout (${displayBaysCount}-bay layout)
         </h4>
-        <div class="bg-white dark:bg-slate-850 rounded-xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2 relative overflow-y-auto max-h-[300px] custom-scrollbar flex-grow">
+        <div class="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2 relative overflow-y-auto max-h-[300px] custom-scrollbar flex-grow">
           <div class="grid grid-cols-6 gap-2">
             ${baysHTML}
           </div>
@@ -1229,7 +1216,6 @@ export function renderBtrfsTab() {
   renderBtrfsChassis();
 
   const recalculateBtrfsUnits = () => {
-    const updResult = calculateBtrfsPool(STATE.btrfs.disks, profile);
     renderBtrfsMetrics();
     renderBtrfsChassis();
   };
@@ -1461,7 +1447,7 @@ function renderNutanixMetricsComparison(title: string, results: NutanixResult) {
       <!-- Capacity Grid -->
       <div class="grid grid-cols-2 gap-3 relative z-10">
         <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-3.5 rounded-xl shadow-sm">
-          <p class="text-slate-455 dark:text-slate-400 text-[9px] font-bold uppercase tracking-widest mb-1 select-none">Base Usable</p>
+          <p class="text-slate-400 dark:text-slate-400 text-[9px] font-bold uppercase tracking-widest mb-1 select-none">Base Usable</p>
           <p class="text-lg font-black text-slate-800 dark:text-slate-200 font-mono leading-none">${results.usable.toFixed(1).replace(/\.0$/, '')} TB</p>
           <p class="text-[9px] text-slate-400 dark:text-slate-500 font-mono mt-1.5 select-none">~${usableTiB} TiB binary</p>
         </div>
@@ -1478,12 +1464,12 @@ function renderNutanixMetricsComparison(title: string, results: NutanixResult) {
         <div class="grid grid-cols-3 gap-3 font-mono text-slate-900 dark:text-slate-100">
           <div class="flex flex-col">
             <span class="text-[8px] uppercase text-slate-400 font-sans font-bold leading-none mb-1">Max Read</span>
-            <span class="text-sm font-bold text-indigo-650 dark:text-indigo-400 leading-none">${formatIOPS(results.readIops)}</span>
+            <span class="text-sm font-bold text-indigo-600 dark:text-indigo-400 leading-none">${formatIOPS(results.readIops)}</span>
             <span class="text-[8px] text-slate-500 font-sans mt-0.5">${formatSpeed(results.readSpeed)}</span>
           </div>
           <div class="flex flex-col">
             <span class="text-[8px] uppercase text-slate-400 font-sans font-bold leading-none mb-1">Max Write</span>
-            <span class="text-sm font-bold text-pink-655 dark:text-pink-400 leading-none">${formatIOPS(results.writeIops)}</span>
+            <span class="text-sm font-bold text-pink-600 dark:text-pink-400 leading-none">${formatIOPS(results.writeIops)}</span>
             <span class="text-[8px] text-slate-500 font-sans mt-0.5">${formatSpeed(results.writeSpeed)}</span>
           </div>
           <div class="flex flex-col border-l pl-2 border-slate-200 dark:border-slate-700">
@@ -1505,67 +1491,22 @@ function freshMetricsAndChassisForNutanix(resRF2: NutanixResult, resRF3: Nutanix
   chassisDiv.innerHTML = '';
   
   // Create an explicit notification area
-  const notifyHtml = (() => {
-    const hasError = resRF2.status.severity === 'error' || resRF3.status.severity === 'error';
-    const hasWarning = resRF2.status.severity === 'warning' || resRF3.status.severity === 'warning';
-    let stat = resRF2.status;
-    
-    // Fallback logic to show the most sever status
-    if (hasError) {
-      stat = resRF2.status.severity === 'error' ? resRF2.status : resRF3.status;
-    } else if (hasWarning) {
-      stat = resRF2.status.severity === 'warning' ? resRF2.status : resRF3.status;
-    } else {
-      stat = resRF2.status; // Default to optimal
-    }
-    
-    const isErr = stat.severity === 'error';
-    const isWarn = stat.severity === 'warning';
-    const isSubopt = stat.severity === 'suboptimal';
-    
-    let bgIconCls = 'bg-emerald-500';
-    let bgDivCls = 'bg-emerald-50 dark:bg-emerald-950/20';
-    let textTitleCls = 'text-emerald-800 dark:text-emerald-300';
-    let textDescCls = 'text-emerald-600 dark:text-emerald-400/80';
-    let svgIcon = 'check-circle';
-    let borderCls = 'border-emerald-200 dark:border-emerald-900/50';
-    
-    if (isErr) {
-      bgIconCls = 'bg-red-500'; bgDivCls = 'bg-red-50 dark:bg-red-950/20';
-      textTitleCls = 'text-red-800 dark:text-red-300'; textDescCls = 'text-red-600 dark:text-red-400/80';
-      svgIcon = 'alert-octagon'; borderCls = 'border-red-200 dark:border-red-900/50';
-    } else if (isWarn) {
-      bgIconCls = 'bg-amber-500'; bgDivCls = 'bg-amber-50 dark:bg-amber-950/20';
-      textTitleCls = 'text-amber-800 dark:text-amber-300'; textDescCls = 'text-amber-700 dark:text-amber-400/80';
-      svgIcon = 'alert-triangle'; borderCls = 'border-amber-200 dark:border-amber-900/50';
-    } else if (isSubopt) {
-      bgIconCls = 'bg-yellow-500'; bgDivCls = 'bg-yellow-50 dark:bg-yellow-950/20';
-      textTitleCls = 'text-yellow-800 dark:text-yellow-300'; textDescCls = 'text-yellow-700 dark:text-yellow-400/80';
-      svgIcon = 'info'; borderCls = 'border-yellow-200 dark:border-yellow-900/50';
-    }
+  const hasError = resRF2.status.severity === 'error' || resRF3.status.severity === 'error';
+  const hasWarning = resRF2.status.severity === 'warning' || resRF3.status.severity === 'warning';
+  let stat = resRF2.status;
 
-    return `
-      <div class="mb-6 flex gap-4 p-4 rounded-xl border ${borderCls} ${bgDivCls} items-start animate-fade-in shadow-sm">
-        <div class="mt-0.5 shrink-0 flex items-center justify-center w-8 h-8 rounded-full ${bgIconCls} text-white shadow-sm ring-4 ring-white/50 dark:ring-black/20">
-          ${getSVGIcon(svgIcon)}
-        </div>
-        <div class="space-y-1">
-          <h4 class="font-bold text-sm tracking-wide uppercase ${textTitleCls}">
-            ${stat.title}
-          </h4>
-          <p class="text-[11px] ${textDescCls} max-w-2xl leading-relaxed">
-            ${stat.desc}
-          </p>
-        </div>
-      </div>
-    `;
-  })();
+  // Fallback logic to show the most sever status
+  if (hasError) {
+    stat = resRF2.status.severity === 'error' ? resRF2.status : resRF3.status;
+  } else if (hasWarning) {
+    stat = resRF2.status.severity === 'warning' ? resRF2.status : resRF3.status;
+  } else {
+    stat = resRF2.status; // Default to optimal
+  }
   
-  const statusBox = document.getElementById('statusBoxContainer')!;
-  statusBox.innerHTML = ''; // Ensure this is empty for Nutanix so warnings don't leak
+  renderStatusBox(stat);
   
   metricsDiv.innerHTML = `
-    ${notifyHtml}
     <div class="mb-6 flex items-center gap-2 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest animate-fade-in pb-2 border-b border-slate-200 dark:border-slate-800">
       ${getSVGIcon('layers', 'w-4 h-4')} Distributed Cluster Topology Comparison
     </div>

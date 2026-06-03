@@ -473,7 +473,7 @@ export const calculateUnraidCache = (
       errDesc = 'ZFS RAIDZ1 requires at least 3 disks.';
     } else if (cacheMode === 'zfs_raidz2' && n < 4) {
       hasError = true;
-      errDesc = 'ZFS RAIDZ2 requires at least 4 x-disks.';
+      errDesc = 'ZFS RAIDZ2 requires at least 4 disks.';
     }
   }
 
